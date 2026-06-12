@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Arduino CLI
-        uses: actions/setup-arduino-cli@v2
+        uses: arduino/setup-arduino-cli@v2
 
       - name: Configure Arduino CLI
         run: |
