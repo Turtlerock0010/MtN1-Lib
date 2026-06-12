@@ -1,0 +1,79 @@
+name: Arduino Library Verification Check
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - 'library.properties'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - 'library.properties'
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Arduino CLI
+        uses: actions/setup-arduino-cli@v2
+
+      - name: Configure Arduino CLI
+        run: |
+          arduino-cli config init --overwrite
+          arduino-cli config set library.enable_unsafe_install true
+
+      - name: Cache ESP32 Core and Tools
+        id: cache-esp32
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.arduino15/packages/esp32
+            ~/.arduino15/package_esp32_index.json
+          key: ${{ runner.os }}-esp32-core-v3.0.0
+
+      - name: Install ESP32 Platform Core
+        if: steps.cache-esp32.outputs.cache-hit != 'true'
+        run: |
+          arduino-cli core update-index --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core install esp32:esp32 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+
+      - name: Install External Dependencies
+        run: |
+          arduino-cli lib update-index
+          
+          # Install your library's dependencies here
+          arduino-cli lib install "Alfredo-NoU3"
+          arduino-cli lib install "PestoLink-Receive"
+          arduino-cli lib install "Adafruit MCP23017 Arduino Library"
+          arduino-cli lib install "Adafruit PWM Servo Driver Library"
+
+      - name: Install This Library
+        run: |
+          mkdir -p ~/Arduino/libraries
+          ln -s "$GITHUB_WORKSPACE" ~/Arduino/libraries/MyCustomLibrary
+
+      - name: Verify and Compile Examples
+        run: |
+          # Check if any .ino files exist in the examples directory
+          if ! ls examples/*/*.ino 1> /dev/null 2>&1; then
+            echo "No examples found to compile. Skipping compilation check."
+            exit 0
+          fi
+
+          # Loop through and compile them if they do exist
+          for example in examples/*/*.ino; do
+            if [ -f "$example" ]; then
+              echo "--------------------------------------------------------"
+              echo "Compiling $example..."
+              echo "--------------------------------------------------------"
+              arduino-cli compile --fqbn esp32:esp32:esp32s3 "$example"
+            fi
+          done
