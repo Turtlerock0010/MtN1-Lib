@@ -74,6 +74,6 @@ jobs:
               echo "--------------------------------------------------------"
               echo "Compiling $example..."
               echo "--------------------------------------------------------"
-              arduino-cli compile --fqbn esp32:esp32:esp32s3 "$example"
+              arduino-cli compile --fqbn esp32:esp32:esp32s3 -I "$GITHUB_WORKSPACE/src" "$example"
             fi
           done
