@@ -58,7 +58,7 @@ jobs:
       - name: Install This Library
         run: |
           mkdir -p ~/Arduino/libraries
-          ln -s "$GITHUB_WORKSPACE" ~/Arduino/libraries/MyCustomLibrary
+          ln -s "$GITHUB_WORKSPACE" ~/Arduino/libraries/MtN1-Lib
 
       - name: Verify and Compile Examples
         run: |
