@@ -45,8 +45,12 @@ jobs:
 
       - name: Zip Release Folder
         run: |
-          # Zip everything in the current directory, but skip the hidden github files
-          zip -r ${{ github.event.repository.name }}.zip . -x "*.git*" "*.github*"
+          # Create a wrapper folder with the library name
+          mkdir -p MtN1-Lib
+          # Copy library files into the wrapper folder
+          cp -r src/ examples/ library.properties keywords.txt README.md MtN1-Lib/ 2>/dev/null || true
+          # Zip the wrapper folder
+          zip -r MtN1-Lib.zip MtN1-Lib/ -x "*.git*" "*.github*"
           
       - name: Install Project Dependencies
         run: |
