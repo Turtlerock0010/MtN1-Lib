@@ -1,5 +1,5 @@
 # MtN1-Lib
-<img width="532" height="374" alt="image" src="https://github.com/user-attachments/assets/9a846680-ef64-40ea-96a9-1ec22ac53882" />
+<img width="758" height="577" alt="image" src="https://github.com/user-attachments/assets/5bf24c1f-4ca9-4dbe-811a-c1db894b31f8" />
 
 > MtN1 Draft 1 3D Model, WIP
 
